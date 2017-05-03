@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="img/cardinal_logo.png" rel="icon" type="image/png"/>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fr_vars.js"></script>
+    <script>
+        $.get(URL + 'session.php', function(data) { 
+            if( data == "expired" ) { 
+                location.href = "login.html"; 
+            }
+        });
+    
+        $(document).ready(function(){            
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    $response = JSON.parse(xhttp.responseText);
+                    $("#fname").val($response.fname);
+                    $("#lname").val($response.lname);
+                    $("#email").val($response.email);
+                    $("#mobile").val($response.mobile);
+                    $("#password").val($response.password);
+                    $("#title").append($response.select);
+                    $("#img").append($response.img);
+                }
+            };
+            
+            xhttp.open("GET", URL + "fr_per_update.php?id=" + getID(), true);
+            xhttp.send();
+        });
+        
+        $(window).ready(function(){  
+            $("#submit").click( function() { 
+                var formData = new FormData();
+                formData.append("fname", $("#fname").val());
+                formData.append("lname", $("#lname").val());
+                formData.append("email", $("#email").val());
+                formData.append("mobile", $("#mobile").val());
+                formData.append("password", $("#password").val());
+                formData.append("title", $("#title").val());
+                formData.append("userfile", $('#userfile')[0].files[0]);
+                $.ajax({
+                    type: "POST",
+                    url: URL + "fr_per_update.php?id=" + getID(),
+                    data: formData, 
+                    dataType: 'json',
+                    crossDomain: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) { 
+                        if(data.valid==true){
+                            location.href = "fr_events.html";
+                        }else{
+                            if (data.emailErr==true) {
+                                $("#emailSPAN").html("Please enter a valid Email Address");
+                            } else {
+                                $("#emailSPAN").html("");
+                            }
+                            if (data.duplicateEmail==true) {
+                                $("#emailSPAN").html("Email has already been registered!");
+                            } else {
+                                $("#emailSPAN").html("");
+                            }
+                            if (data.mobileError==true) {
+                                $("#mobileSPAN").html("Please write Mobile Number in form 000-000-0000");
+                            } else {
+                                $("#mobileSPAN").html("");
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+		<div class="span10 offset1">
+			<div class="row">
+				<h3>Update Volunteer Details</h3>
+			</div>
+			<div class="form-horizontal">
+				<!-- Form elements (same as file: fr_per_create.php) -->
+				<div class="control-group">
+					<label class="control-label">First Name</label>
+					<div class="controls">
+						<input id="fname" name="fname" type="text"  placeholder="First Name" value="">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Last Name</label>
+					<div class="controls">
+						<input id="lname" name="lname" type="text"  placeholder="Last Name" value="">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Email</label>
+					<div class="controls">
+						<input id="email" name="email" type="text" placeholder="Email Address" value="">
+                        <span id="emailSPAN" class="help-inline"></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Mobile Number</label>
+					<div class="controls">
+						<input id="mobile" name="mobile" type="text"  placeholder="Mobile Phone Number" value="">
+                        <span id="mobileSPAN" class="help-inline"></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Password</label>
+					<div class="controls">
+						<input id="password" name="password" type="text"  placeholder="Password" value="">
+                        <span class="help-inline"></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Title</label>
+					<div class="controls">
+						<select id="title" class="form-control" name="title">
+							<!-- insert options here -->
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Picture</label>
+					<div class="controls">
+						<input type="hidden" name="MAX_FILE_SIZE" value="16000000">
+						<input name="userfile" type="file" id="userfile">
+					</div>
+				</div>
+				<div class="form-actions">
+					<button id="submit" type="submit" class="btn btn-success">Update</button>
+					<a class="btn" href="fr_persons.html">Back</a>
+				</div>
+			</div>
+				<!-- Display photo, if any --> 
+				<div class='control-group col-md-6'>
+					<div  class="controls ">
+                        <div id="img"><!-- insert picture here --></div>
+					</div>
+				</div>
+		</div> <!-- end div: class="span10 offset1" -->
+    </div> <!-- end div: class="container" -->
+</body>
+</html>

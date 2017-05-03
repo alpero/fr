@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="img/cardinal_logo.png" rel="icon" type="image/png"/>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fr_vars.js"></script>
+    <script>
+        $(document).ready( function() {
+            $("#submit").click( function() {
+                var formData = new FormData();
+                formData.append("fname", $("#fname").val());
+                formData.append("lname", $("#lname").val());
+                formData.append("email", $("#email").val());
+                formData.append("mobile", $("#mobile").val());
+                formData.append("password", $("#password").val());
+                formData.append("title", $("#title").val());
+                formData.append("userfile", $('#userfile')[0].files[0]);
+                $.ajax({
+                    type: "POST",
+                    url: URL + "fr_per_create.php",
+                    data: formData, 
+                    dataType: 'json',
+                    crossDomain: true,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) { 
+                        if(data.valid==true){
+                            location.href = "fr_events.html";
+                        }else{
+                            if (data.emailErr==true) {
+                                $("#emailSPAN").html("Please enter a valid Email Address");
+                            } else {
+                                $("#emailSPAN").html("");
+                            }
+                            if (data.duplicateEmail==true) {
+                                $("#emailSPAN").html("Email has already been registered!");
+                            } else {
+                                $("#emailSPAN").html("");
+                            }
+                            if (data.mobileError==true) {
+                                $("#mobileSPAN").html("Please write Mobile Number in form 000-000-0000");
+                            } else {
+                                $("#mobileSPAN").html("");
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+		<div class="span10 offset1">
+			<div class="row">
+				<h3>Add New Volunteer</h3>
+			</div>
+			<div class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label">First Name</label>
+					<div class="controls">
+						<input id="fname" name="fname" type="text" placeholder="First Name" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Last Name</label>
+					<div class="controls">
+						<input id="lname" name="lname" type="text" placeholder="Last Name" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Email</label>
+					<div class="controls">
+						<input id="email" name="email" type="text" placeholder="Email Address" required>
+                        <span id="emailSPAN" class="help-inline"></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Mobile Number</label>
+					<div class="controls">
+						<input id="mobile" name="mobile" type="text" placeholder="Mobile Phone Number" required>
+                        <span id="mobileSPAN" class="help-inline"></span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Password</label>
+					<div class="controls">
+						<input id="password" name="password" type="text" placeholder="Password" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Title</label>
+					<div class="controls">
+						<select class="form-control" id="title" name="title">
+							<option value="Volunteer" selected>Volunteer</option>
+							<option value="Administrator" >Administrator</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Picture</label>
+					<div class="controls">
+						<input type="hidden" name="MAX_FILE_SIZE" value="16000000">
+						<input name="userfile" type="file" id="userfile">
+					</div>
+				</div>
+				<div class="form-actions">
+					<button id="submit" type="submit" class="btn btn-success">Create</button>
+					<a class="btn" href="fr_persons.html">Back</a>
+				</div>
+			</div>
+		</div>	
+    </div>
+</body>
+</html>

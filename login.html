@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="img/cardinal_logo.png" rel="icon" type="image/png"/>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fr_vars.js"></script>
+    <script>    
+        $(document).ready( function() {
+            $("#submit").click( function() {
+                $.ajax({
+                    type: "POST",
+                    url: URL + "login.php",
+                    data: 
+                        "username="+$("#username").val()
+                        +"&password="+$("#password").val(),
+                    dataType: 'json',
+                    crossDomain: true,
+                    cache: false,
+                    success: function(data) {
+                        if(data.valid==true){
+                            location.href = "fr_assignments.html?id=" + data.sid;
+                        }else{
+                            $("#error").html("invalid username or password");
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+		<div class="span10 offset1">
+            <div class="row">
+				<img src="img/svsu_fr_logo.png"/>
+			</div>
+			<div class="row">
+				<h3>Volunteer Login</h3>
+			</div>
+			<div class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label">Username (Email)</label>
+					<div class="controls">
+						<input id="username" type="text"  placeholder="me@email.com" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Password</label>
+					<div class="controls">
+						<input id="password" type="password" placeholder="password" required>
+					</div>	
+				</div>
+                <div id="error" style="color:red; font-weight:bold;"></div>
+				<div class="form-actions">
+					<button id="submit" type="submit" class="btn btn-success">Sign in</button>
+					&nbsp; &nbsp;
+					<a class="btn btn-primary" href="fr_per_create.html">Join (New Volunteer)</a>
+				</div>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

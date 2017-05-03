@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="img/cardinal_logo.png" rel="icon" type="image/png"/>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fr_vars.js"></script>
+    <script>
+        var $id = getID();
+        var $urlString = "";
+        if ($id == null) {
+            $urlString = URL + "fr_assignments.php";
+        } else {
+            $urlString = URL + "fr_assignments.php?id=" + $id;
+        }
+    
+        $.get(URL + 'session.php', function(data) { 
+            if( data == "expired" ) { 
+                location.href = "login.html"; 
+            }
+        });
+    
+        $(document).ready(function(){
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    document.getElementById("body").innerHTML = xhttp.responseText;
+                }
+            };
+            
+            xhttp.open("GET", $urlString, true);
+            xhttp.send();
+        });
+    </script>
+</head>
+
+<body>
+    <div id="body"></div>    
+</body>
+</html>

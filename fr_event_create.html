@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="img/cardinal_logo.png" rel="icon" type="image/png"/>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fr_vars.js"></script>
+    <script>
+        $.get(URL + 'session.php', function(data) { 
+            if( data == "expired" ) { 
+                location.href = "login.html"; 
+            }
+        });
+        
+        $(document).ready( function() {
+            $("#submit").click( function() {
+                var dataString =
+                     "event_date="+$("#event_date").val()
+                    +"&event_time="+$("#event_time").val()
+                    +"&event_location="+$("#event_location").val()
+                    +"&event_description="+$("#event_description").val();
+                $.ajax({
+                    type: "POST",
+                    url: URL + "fr_event_create.php",
+                    data: dataString,
+                    dataType: 'json',
+                    crossDomain: true,
+                    cache: false,
+                    success: function(data) { 
+                        if(data.valid==true){
+                            location.href = "fr_events.html";
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+		<div class="span10 offset1">
+			<div class="row">
+				<h3>Add New Shift</h3>
+			</div>
+			<div class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label">Date</label>
+					<div class="controls">
+						<input id="event_date" name="event_date" type="date"  placeholder="Date" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Time</label>
+					<div class="controls">
+						<input id="event_time" name="event_time" type="time" placeholder="Time" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Location</label>
+					<div class="controls">
+						<input id="event_location" name="event_location" type="text" placeholder="Location" required>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Description</label>
+					<div class="controls">
+						<input id="event_description" name="event_description" type="text" placeholder="Description" required>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button id="submit" type="submit" class="btn btn-success">Create</button>
+					<a class="btn" href="fr_events.html">Back</a>
+				</div>
+			</div>
+		</div>
+    </div>
+</body>
+</html>

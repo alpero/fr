@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="img/cardinal_logo.png" rel="icon" type="image/png"/>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/fr_vars.js"></script>
+    <script>
+        $.get(URL + 'session.php', function(data) { 
+            if( data == "expired" ) { 
+                location.href = "login.html"; 
+            }
+        });
+    
+        $(document).ready(function(){
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    document.getElementById("body").innerHTML = xhttp.responseText;
+                }
+            };
+            
+            xhttp.open("GET", URL + "fr_event_delete.php?id=" + getID(), true);
+            xhttp.send();
+        });
+        
+        $(window).ready(function(){
+            $("#submit").click( function() { 
+                $.ajax({
+                    type: "POST",
+                    url: URL + "fr_event_delete.php",
+                    data: "id="+getID(),
+                    crossDomain: true,
+                    cache: false,
+                    success: function(data){ 
+                        location.href = "fr_events.html"; 
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="span10 offset1">
+            <div class="row">
+                <h3>Delete Shift</h3>
+            </div>        
+            <div class="form-horizontal">
+                <input type="hidden" name="id" value="<?php echo $id;?>"/>
+                <p class="alert alert-error">Are you sure you want to delete ?</p>
+                <div class="form-actions">
+                    <button id="submit" type="submit" class="btn btn-danger">Yes</button>
+                    <a class="btn" href="fr_events.html">No</a>
+                </div>
+            </div>
+            <div id="body"></div>
+        </div>
+    </div>
+</body>
+</html>
